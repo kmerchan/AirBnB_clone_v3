@@ -74,7 +74,7 @@ class TestFileStorage(TestCase):
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
-        self.assertIs(type(models.storage.all()), dict)
+        self.assertIs(type(storage.all()), dict)
 
 
 class test_dbStorage(TestCase):
@@ -176,6 +176,22 @@ class test_dbStorage(TestCase):
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_storage_var_created(self):
         """ DBStorage object storage created """
-        from models.engine.db_storage import DBStorage
-        print(type(storage))
         self.assertEqual(type(storage), DBStorage)
+
+    def test_storage_get_method(self):
+        """tests FileStorage method to retrieve one object"""
+        # gets initial counts of all objects and all State objects in storage
+        count = storage.count()
+        count_state = storage.count(State)
+        # tests get method when id is not found
+        self.assertIs(storage.get(State, 89), None)
+        # creates new instance of State and saves to database
+        new = State()
+        new.save()
+        # tests if count increased for both all and State objects
+        self.assertEqual(storage.count(), count + 1)
+        self.assertEqual(storage.count(State), count_state + 1)
+        # tests get method with valid class name and id
+        got_obj = storage.get(State, new.id)
+        self.assertIs(type(got_obj), State)
+        self.assertEqual(got_obj.id, new.id)

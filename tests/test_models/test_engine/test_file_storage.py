@@ -190,3 +190,21 @@ class test_fileStorage(TestCase):
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+
+    def test_storage_get_method(self):
+        """tests FileStorage method to retrieve one object"""
+        # gets initial counts of all objects and all State objects in storage
+        count = storage.count()
+        count_state = storage.count(State)
+        # tests get method when id is not found
+        self.assertIs(storage.get(State, 89), None)
+        # creates new instance of State and saves to database
+        new = State()
+        new.save()
+        # tests if count increased for both all and State objects
+        self.assertEqual(storage.count(), count + 1)
+        self.assertEqual(storage.count(State), count_state + 1)
+        # tests get method with valid class name and id
+        got_obj = storage.get(State, new.id)
+        self.assertIs(type(got_obj), State)
+        self.assertEqual(got_obj.id, new.id)
