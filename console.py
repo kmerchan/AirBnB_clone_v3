@@ -3,7 +3,7 @@
 
 import cmd
 from datetime import datetime
-import models
+from models.__init__ import storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -159,6 +159,19 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
         else:
             print("** class doesn't exist **")
+
+    def do_count(self, args):
+        """Count current number of class instances"""
+        count = 0
+        __objects = storage.all()
+        for k, v in __objects.items():
+            if args == k.split('.')[0]:
+                count += 1
+        print(count)
+
+    def help_count(self):
+        """ """
+        print("Usage: count <class_name>")
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
