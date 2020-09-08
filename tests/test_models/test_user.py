@@ -5,15 +5,15 @@ Contains the TestUserDocs classes
 
 from datetime import datetime
 import inspect
-import models
+from models import storage_t
 from models import user
+from models.user import User
 from models.base_model import BaseModel
 import pep8
-import unittest
-User = user.User
+from unittest import TestCase
 
 
-class TestUserDocs(unittest.TestCase):
+class TestUserDocs(TestCase):
     """Tests to check the documentation and style of User class"""
     @classmethod
     def setUpClass(cls):
@@ -57,51 +57,51 @@ class TestUserDocs(unittest.TestCase):
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestUser(unittest.TestCase):
+class TestUser(TestCase):
     """Test the User class"""
     def test_is_subclass(self):
         """Test that User is a subclass of BaseModel"""
-        user = User()
-        self.assertIsInstance(user, BaseModel)
-        self.assertTrue(hasattr(user, "id"))
-        self.assertTrue(hasattr(user, "created_at"))
-        self.assertTrue(hasattr(user, "updated_at"))
+        u = User()
+        self.assertIsInstance(u, BaseModel)
+        self.assertTrue(hasattr(u, "id"))
+        self.assertTrue(hasattr(u, "created_at"))
+        self.assertTrue(hasattr(u, "updated_at"))
 
     def test_email_attr(self):
         """Test that User has attr email, and it's an empty string"""
-        user = User()
-        self.assertTrue(hasattr(user, "email"))
-        if models.storage_t == 'db':
-            self.assertEqual(user.email, None)
+        u = User()
+        self.assertTrue(hasattr(u, "email"))
+        if storage_t == 'db':
+            self.assertEqual(u.email, None)
         else:
-            self.assertEqual(user.email, "")
+            self.assertEqual(u.email, "")
 
     def test_password_attr(self):
         """Test that User has attr password, and it's an empty string"""
-        user = User()
-        self.assertTrue(hasattr(user, "password"))
-        if models.storage_t == 'db':
-            self.assertEqual(user.password, None)
+        u = User()
+        self.assertTrue(hasattr(u, "password"))
+        if storage_t == 'db':
+            self.assertEqual(u.password, None)
         else:
-            self.assertEqual(user.password, "")
+            self.assertEqual(u.password, "")
 
     def test_first_name_attr(self):
         """Test that User has attr first_name, and it's an empty string"""
-        user = User()
-        self.assertTrue(hasattr(user, "first_name"))
-        if models.storage_t == 'db':
-            self.assertEqual(user.first_name, None)
+        u = User()
+        self.assertTrue(hasattr(u, "first_name"))
+        if storage_t == 'db':
+            self.assertEqual(u.first_name, None)
         else:
-            self.assertEqual(user.first_name, "")
+            self.assertEqual(u.first_name, "")
 
     def test_last_name_attr(self):
         """Test that User has attr last_name, and it's an empty string"""
-        user = User()
-        self.assertTrue(hasattr(user, "last_name"))
-        if models.storage_t == 'db':
-            self.assertEqual(user.last_name, None)
+        u = User()
+        self.assertTrue(hasattr(u, "last_name"))
+        if storage_t == 'db':
+            self.assertEqual(u.last_name, None)
         else:
-            self.assertEqual(user.last_name, "")
+            self.assertEqual(u.last_name, "")
 
     def test_to_dict_creates_dict(self):
         """test to_dict method creates a dictionary with proper attrs"""
@@ -127,6 +127,6 @@ class TestUser(unittest.TestCase):
 
     def test_str(self):
         """test that the str method has the correct output"""
-        user = User()
-        string = "[User] ({}) {}".format(user.id, user.__dict__)
-        self.assertEqual(string, str(user))
+        u = User()
+        string = "[User] ({}) {}".format(u.id, u.__dict__)
+        self.assertEqual(string, str(u))

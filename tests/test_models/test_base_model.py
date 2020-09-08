@@ -2,16 +2,18 @@
 """Test BaseModel for expected behavior and documentation"""
 from datetime import datetime
 import inspect
-import models
+from models.base_model import BaseModel
 import pep8 as pycodestyle
 import time
-import unittest
+import json
+import os
+from unittest import TestCase
 from unittest import mock
-BaseModel = models.base_model.BaseModel
+import models
 module_doc = models.base_model.__doc__
 
 
-class TestBaseModelDocs(unittest.TestCase):
+class TestBaseModelDocs(TestCase):
     """Tests to check the documentation and style of BaseModel class"""
 
     @classmethod
@@ -56,7 +58,7 @@ class TestBaseModelDocs(unittest.TestCase):
                 )
 
 
-class TestBaseModel(unittest.TestCase):
+class TestBaseModel(TestCase):
     """Test the BaseModel class"""
     def test_instantiation(self):
         """Test that object is correctly created"""

@@ -5,15 +5,15 @@ Contains the TestCityDocs classes
 
 from datetime import datetime
 import inspect
-import models
 from models import city
+from models import storage_t
+from models.city import City
 from models.base_model import BaseModel
 import pep8
-import unittest
-City = city.City
+from unittest import TestCase
 
 
-class TestCityDocs(unittest.TestCase):
+class TestCityDocs(TestCase):
     """Tests to check the documentation and style of City class"""
     @classmethod
     def setUpClass(cls):
@@ -57,33 +57,33 @@ class TestCityDocs(unittest.TestCase):
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestCity(unittest.TestCase):
+class TestCity(TestCase):
     """Test the City class"""
     def test_is_subclass(self):
         """Test that City is a subclass of BaseModel"""
-        city = City()
-        self.assertIsInstance(city, BaseModel)
-        self.assertTrue(hasattr(city, "id"))
-        self.assertTrue(hasattr(city, "created_at"))
-        self.assertTrue(hasattr(city, "updated_at"))
+        c = City()
+        self.assertIsInstance(c, BaseModel)
+        self.assertTrue(hasattr(c, "id"))
+        self.assertTrue(hasattr(c, "created_at"))
+        self.assertTrue(hasattr(c, "updated_at"))
 
     def test_name_attr(self):
         """Test that City has attribute name, and it's an empty string"""
-        city = City()
-        self.assertTrue(hasattr(city, "name"))
-        if models.storage_t == 'db':
-            self.assertEqual(city.name, None)
+        c = City()
+        self.assertTrue(hasattr(c, "name"))
+        if storage_t == 'db':
+            self.assertEqual(c.name, None)
         else:
-            self.assertEqual(city.name, "")
+            self.assertEqual(c.name, "")
 
     def test_state_id_attr(self):
         """Test that City has attribute state_id, and it's an empty string"""
-        city = City()
-        self.assertTrue(hasattr(city, "state_id"))
-        if models.storage_t == 'db':
-            self.assertEqual(city.state_id, None)
+        c = City()
+        self.assertTrue(hasattr(c, "state_id"))
+        if storage_t == 'db':
+            self.assertEqual(c.state_id, None)
         else:
-            self.assertEqual(city.state_id, "")
+            self.assertEqual(c.state_id, "")
 
     def test_to_dict_creates_dict(self):
         """test to_dict method creates a dictionary with proper attrs"""
@@ -109,6 +109,6 @@ class TestCity(unittest.TestCase):
 
     def test_str(self):
         """test that the str method has the correct output"""
-        city = City()
-        string = "[City] ({}) {}".format(city.id, city.__dict__)
-        self.assertEqual(string, str(city))
+        c = City()
+        string = "[City] ({}) {}".format(c.id, c.__dict__)
+        self.assertEqual(string, str(c))

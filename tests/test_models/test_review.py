@@ -5,15 +5,15 @@ Contains the TestReviewDocs classes
 
 from datetime import datetime
 import inspect
-import models
 from models import review
+from models import storage_t
+from models.review import Review
 from models.base_model import BaseModel
 import pep8
-import unittest
-Review = review.Review
+from unittest import TestCase
 
 
-class TestReviewDocs(unittest.TestCase):
+class TestReviewDocs(TestCase):
     """Tests to check the documentation and style of Review class"""
     @classmethod
     def setUpClass(cls):
@@ -57,42 +57,42 @@ class TestReviewDocs(unittest.TestCase):
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestReview(unittest.TestCase):
+class TestReview(TestCase):
     """Test the Review class"""
     def test_is_subclass(self):
         """Test if Review is a subclass of BaseModel"""
-        review = Review()
-        self.assertIsInstance(review, BaseModel)
-        self.assertTrue(hasattr(review, "id"))
-        self.assertTrue(hasattr(review, "created_at"))
-        self.assertTrue(hasattr(review, "updated_at"))
+        r = Review()
+        self.assertIsInstance(r, BaseModel)
+        self.assertTrue(hasattr(r, "id"))
+        self.assertTrue(hasattr(r, "created_at"))
+        self.assertTrue(hasattr(r, "updated_at"))
 
     def test_place_id_attr(self):
         """Test Review has attr place_id, and it's an empty string"""
-        review = Review()
-        self.assertTrue(hasattr(review, "place_id"))
-        if models.storage_t == 'db':
-            self.assertEqual(review.place_id, None)
+        r = Review()
+        self.assertTrue(hasattr(r, "place_id"))
+        if storage_t == 'db':
+            self.assertEqual(r.place_id, None)
         else:
-            self.assertEqual(review.place_id, "")
+            self.assertEqual(r.place_id, "")
 
     def test_user_id_attr(self):
         """Test Review has attr user_id, and it's an empty string"""
-        review = Review()
-        self.assertTrue(hasattr(review, "user_id"))
-        if models.storage_t == 'db':
-            self.assertEqual(review.user_id, None)
+        r = Review()
+        self.assertTrue(hasattr(r, "user_id"))
+        if storage_t == 'db':
+            self.assertEqual(r.user_id, None)
         else:
-            self.assertEqual(review.user_id, "")
+            self.assertEqual(r.user_id, "")
 
     def test_text_attr(self):
         """Test Review has attr text, and it's an empty string"""
-        review = Review()
-        self.assertTrue(hasattr(review, "text"))
-        if models.storage_t == 'db':
-            self.assertEqual(review.text, None)
+        r = Review()
+        self.assertTrue(hasattr(r, "text"))
+        if storage_t == 'db':
+            self.assertEqual(r.text, None)
         else:
-            self.assertEqual(review.text, "")
+            self.assertEqual(r.text, "")
 
     def test_to_dict_creates_dict(self):
         """test to_dict method creates a dictionary with proper attrs"""
@@ -118,6 +118,6 @@ class TestReview(unittest.TestCase):
 
     def test_str(self):
         """test that the str method has the correct output"""
-        review = Review()
-        string = "[Review] ({}) {}".format(review.id, review.__dict__)
-        self.assertEqual(string, str(review))
+        r = Review()
+        string = "[Review] ({}) {}".format(r.id, r.__dict__)
+        self.assertEqual(string, str(r))

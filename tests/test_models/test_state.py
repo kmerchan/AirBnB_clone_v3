@@ -5,15 +5,15 @@ Contains the TestStateDocs classes
 
 from datetime import datetime
 import inspect
-import models
 from models import state
+from models import storage_t
+from models.state import State
 from models.base_model import BaseModel
 import pep8
-import unittest
-State = state.State
+from unittest import TestCase
 
 
-class TestStateDocs(unittest.TestCase):
+class TestStateDocs(TestCase):
     """Tests to check the documentation and style of State class"""
     @classmethod
     def setUpClass(cls):
@@ -57,24 +57,24 @@ class TestStateDocs(unittest.TestCase):
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestState(unittest.TestCase):
+class TestState(TestCase):
     """Test the State class"""
     def test_is_subclass(self):
         """Test that State is a subclass of BaseModel"""
-        state = State()
-        self.assertIsInstance(state, BaseModel)
-        self.assertTrue(hasattr(state, "id"))
-        self.assertTrue(hasattr(state, "created_at"))
-        self.assertTrue(hasattr(state, "updated_at"))
+        s = State()
+        self.assertIsInstance(s, BaseModel)
+        self.assertTrue(hasattr(s, "id"))
+        self.assertTrue(hasattr(s, "created_at"))
+        self.assertTrue(hasattr(s, "updated_at"))
 
     def test_name_attr(self):
         """Test that State has attribute name, and it's as an empty string"""
-        state = State()
-        self.assertTrue(hasattr(state, "name"))
-        if models.storage_t == 'db':
-            self.assertEqual(state.name, None)
+        s = State()
+        self.assertTrue(hasattr(s, "name"))
+        if storage_t == 'db':
+            self.assertEqual(s.name, None)
         else:
-            self.assertEqual(state.name, "")
+            self.assertEqual(s.name, "")
 
     def test_to_dict_creates_dict(self):
         """test to_dict method creates a dictionary with proper attrs"""
@@ -100,6 +100,6 @@ class TestState(unittest.TestCase):
 
     def test_str(self):
         """test that the str method has the correct output"""
-        state = State()
-        string = "[State] ({}) {}".format(state.id, state.__dict__)
-        self.assertEqual(string, str(state))
+        s = State()
+        string = "[State] ({}) {}".format(s.id, s.__dict__)
+        self.assertEqual(string, str(s))
