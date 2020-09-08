@@ -5,9 +5,8 @@ Contains the TestCityDocs classes
 
 from datetime import datetime
 import inspect
-from models import city
 from models import storage_t
-from models.city import City
+from models.city import City, __doc__ as city_doc
 from models.base_model import BaseModel
 import pep8
 from unittest import TestCase
@@ -36,9 +35,9 @@ class TestCityDocs(TestCase):
 
     def test_city_module_docstring(self):
         """Test for the city.py module docstring"""
-        self.assertIsNot(city.__doc__, None,
+        self.assertIsNot(city_doc, None,
                          "city.py needs a docstring")
-        self.assertTrue(len(city.__doc__) >= 1,
+        self.assertTrue(len(city_doc) >= 1,
                         "city.py needs a docstring")
 
     def test_city_class_docstring(self):
@@ -61,37 +60,37 @@ class TestCity(TestCase):
     """Test the City class"""
     def test_is_subclass(self):
         """Test that City is a subclass of BaseModel"""
-        c = City()
-        self.assertIsInstance(c, BaseModel)
-        self.assertTrue(hasattr(c, "id"))
-        self.assertTrue(hasattr(c, "created_at"))
-        self.assertTrue(hasattr(c, "updated_at"))
+        city = City()
+        self.assertIsInstance(city, BaseModel)
+        self.assertTrue(hasattr(city, "id"))
+        self.assertTrue(hasattr(city, "created_at"))
+        self.assertTrue(hasattr(city, "updated_at"))
 
     def test_name_attr(self):
         """Test that City has attribute name, and it's an empty string"""
-        c = City()
-        self.assertTrue(hasattr(c, "name"))
+        city = City()
+        self.assertTrue(hasattr(city, "name"))
         if storage_t == 'db':
-            self.assertEqual(c.name, None)
+            self.assertEqual(city.name, None)
         else:
-            self.assertEqual(c.name, "")
+            self.assertEqual(city.name, "")
 
     def test_state_id_attr(self):
         """Test that City has attribute state_id, and it's an empty string"""
-        c = City()
-        self.assertTrue(hasattr(c, "state_id"))
+        city = City()
+        self.assertTrue(hasattr(city, "state_id"))
         if storage_t == 'db':
-            self.assertEqual(c.state_id, None)
+            self.assertEqual(city.state_id, None)
         else:
-            self.assertEqual(c.state_id, "")
+            self.assertEqual(city.state_id, "")
 
     def test_to_dict_creates_dict(self):
         """test to_dict method creates a dictionary with proper attrs"""
-        c = City()
-        new_d = c.to_dict()
+        city = City()
+        new_d = city.to_dict()
         self.assertEqual(type(new_d), dict)
         self.assertFalse("_sa_instance_state" in new_d)
-        for attr in c.__dict__:
+        for attr in city.__dict__:
             if attr is not "_sa_instance_state":
                 self.assertTrue(attr in new_d)
         self.assertTrue("__class__" in new_d)
@@ -99,16 +98,18 @@ class TestCity(TestCase):
     def test_to_dict_values(self):
         """test that values in dict returned from to_dict are correct"""
         t_format = "%Y-%m-%dT%H:%M:%S.%f"
-        c = City()
-        new_d = c.to_dict()
+        city = City()
+        new_d = city.to_dict()
         self.assertEqual(new_d["__class__"], "City")
         self.assertEqual(type(new_d["created_at"]), str)
         self.assertEqual(type(new_d["updated_at"]), str)
-        self.assertEqual(new_d["created_at"], c.created_at.strftime(t_format))
-        self.assertEqual(new_d["updated_at"], c.updated_at.strftime(t_format))
+        self.assertEqual(new_d["created_at"],
+                         city.created_at.strftime(t_format))
+        self.assertEqual(new_d["updated_at"],
+                         city.updated_at.strftime(t_format))
 
     def test_str(self):
         """test that the str method has the correct output"""
-        c = City()
-        string = "[City] ({}) {}".format(c.id, c.__dict__)
-        self.assertEqual(string, str(c))
+        city = City()
+        string = "[City] ({}) {}".format(city.id, city.__dict__)
+        self.assertEqual(string, str(city))

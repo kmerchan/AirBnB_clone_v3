@@ -6,7 +6,7 @@ Contains the TestDBStorageDocs and TestDBStorage classes
 from datetime import datetime
 import inspect
 from models import storage, storage_t
-from models.engine import db_storage
+from models.engine.db_storage import DBStorage, __doc__ as db_storage_doc
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -17,9 +17,7 @@ from models.user import User
 import MySQLdb
 import os
 import pep8
-from unittest import TestCase
-from unittest import skipIf
-DBStorage = db_storage.DBStorage
+from unittest import TestCase, skipIf
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
 
@@ -48,9 +46,9 @@ test_db_storage.py'])
 
     def test_db_storage_module_docstring(self):
         """Test for the db_storage.py module docstring"""
-        self.assertIsNot(db_storage.__doc__, None,
+        self.assertIsNot(db_storage_doc, None,
                          "db_storage.py needs a docstring")
-        self.assertTrue(len(db_storage.__doc__) >= 1,
+        self.assertTrue(len(db_storage_doc) >= 1,
                         "db_storage.py needs a docstring")
 
     def test_db_storage_class_docstring(self):
@@ -74,7 +72,7 @@ class TestFileStorage(TestCase):
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
-        self.assertIs(type(models.storage.all()), dict)
+        self.assertIs(type(storage.all()), dict)
 
 
 class test_dbStorage(TestCase):
@@ -85,50 +83,56 @@ class test_dbStorage(TestCase):
         db = MySQLdb.connect(host="localhost", user="hbnb_test",
                              passwd="hbnb_test_pwd", db="hbnb_test_db")
         cur = db.cursor()
-        cur.execute("""SELECT COUNT(*) FROM states""")
+        cur.execute("""SELECT * FROM states""")
         count1 = cur.fetchall()
         new = State()
+        new.name = "New York"
         new.save()
-        cur.execute("""SELECT COUNT(*) FROM states""")
+        cur.close()
+        db.close()
+        db = MySQLdb.connect(host="localhost", user="hbnb_test",
+                             passwd="hbnb_test_pwd", db="hbnb_test_db")
+        cur = db.cursor()
+        cur.execute("""SELECT * FROM states""")
         count2 = cur.fetchall()
-        self.assertEqual(count1 + 1, count2)
+        self.assertEqual(len(count1) + 1, len(count2))
         cur.close()
         db.close()
 
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_all(self):
-        """ __objects is properly returned """
-        # tests that storage.all() returns dictionary of objects
-        new = BaseModel()
-        new.save()
-        temp = storage.all()
-        self.assertIsInstance(temp, dict)
-        dict_key = "{}.{}".format("BaseModel", new.id)
-        self.assertIn(dict_key, temp)
-
         # tests storage.all() with cls argument, with no cls instances
         all_states = storage.all(State)
         db = MySQLdb.connect(host="localhost", user="hbnb_test",
-                             passwd="hbnb_test_pd", db="hbnb_test_db")
+                             passwd="hbnb_test_pwd", db="hbnb_test_db")
         cur = db.cursor()
-        cur.execute("""SELECT COUNT(*) FROM states""")
+        cur.execute("""SELECT * FROM states""")
         count = cur.fetchall()
-        self.assertEqual(len(all_states.keys()), count)
+        self.assertEqual(len(all_states.keys()), len(count))
         # creates cls instance and retests storage.all() with cls
         new_state = State()
         new_state.name = "California"
         new_state.save()
         all_states = storage.all(State)
-        self.assertEqual(len(all_states.keys()), count + 1)
-        for k, v in all_states.items():
-            self.assertEqual("California", v.name)
-        cur.execute("""SELECT COUNT(*) FROM states""")
+        # tests that storage.all returns dictionary of objects and key
+        self.assertIsInstance(storage.all(), dict)
+        dict_key = "{}.{}".format("State", new_state.id)
+        self.assertIn(dict_key, storage.all())
+        self.assertEqual(len(all_states.keys()), len(count) + 1)
+        self.assertEqual("California",
+                         all_states.get("State.{}".format(new_state.id)).name)
+        cur.close()
+        db.close()
+        db = MySQLdb.connect(host="localhost", user="hbnb_test",
+                             passwd="hbnb_test_pwd", db="hbnb_test_db")
+        cur = db.cursor()
+        cur.execute("""SELECT * FROM states""")
         count2 = cur.fetchall()
-        self.assertEqual(count + 1, count2)
+        self.assertEqual(len(count) + 1, len(count2))
         # tests delete method
         storage.delete(new_state)
         all_states = storage.all(State)
-        self.assertEqual(len(all_states.keys()), count)
+        self.assertEqual(len(all_states.keys()), len(count))
         cur.close()
         db.close()
 
@@ -140,7 +144,7 @@ class test_dbStorage(TestCase):
         new.save()
         C_id = new.id
         db = MySQLdb.connect(host="localhost", user="hbnb_test",
-                             passwd="hbnb_test_pd", db="hbnb_test_db")
+                             passwd="hbnb_test_pwd", db="hbnb_test_db")
         cur = db.cursor()
         cur.execute("""SELECT COUNT(*) FROM states""")
         count = cur.fetchall()
@@ -155,7 +159,9 @@ class test_dbStorage(TestCase):
         new.name = "testing"
         new.save()
         storage.reload()
-        self.assertIn("testing", storage.all(State).values())
+        self.assertIn("State.{}".format(new.id), storage.all(State).keys())
+        self.assertEqual(storage.all().get("State.{}".
+                                           format(new.id)).name, "testing")
 
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_type_objects(self):
@@ -165,17 +171,14 @@ class test_dbStorage(TestCase):
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_key_format(self):
         """ Key is properly formatted """
-        new = BaseModel()
+        new = State()
+        new.name = "Maine"
         new.save()
-        _id = new.id
         for key in storage.all().keys():
-            temp = key
-            if _id in key:
-                self.assertEqual(temp, 'BaseModel' + '.' + _id)
+            if new.id in key:
+                self.assertEqual(key, 'State' + '.' + new.id)
 
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_storage_var_created(self):
         """ DBStorage object storage created """
-        from models.engine.db_storage import DBStorage
-        print(type(storage))
         self.assertEqual(type(storage), DBStorage)

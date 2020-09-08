@@ -6,7 +6,7 @@ Contains the TestFileStorageDocs classes
 from datetime import datetime
 import inspect
 from models import storage, storage_t
-from models.engine import file_storage
+from models.engine.file_storage import FileStorage, __doc__ as fs_doc
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -17,8 +17,7 @@ from models.user import User
 import json
 import os
 import pep8
-from unittest import TestCase
-from unittest import skipIf
+from unittest import TestCase, skipIf
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
 
@@ -29,7 +28,7 @@ class TestFileStorageDocs(TestCase):
     def setUpClass(cls):
         """Set up for the doc tests"""
         cls.fs_f = inspect.getmembers(
-            file_storage.FileStorage, inspect.isfunction)
+            FileStorage, inspect.isfunction)
 
     def test_pep8_conformance_file_storage(self):
         """Test that models/engine/file_storage.py conforms to PEP8."""
@@ -48,16 +47,16 @@ test_file_storage.py'])
 
     def test_file_storage_module_docstring(self):
         """Test for the file_storage.py module docstring"""
-        self.assertIsNot(file_storage.__doc__, None,
+        self.assertIsNot(fs_doc, None,
                          "file_storage.py needs a docstring")
-        self.assertTrue(len(file_storage.__doc__) >= 1,
+        self.assertTrue(len(fs_doc) >= 1,
                         "file_storage.py needs a docstring")
 
     def test_file_storage_class_docstring(self):
         """Test for the FileStorage class docstring"""
-        self.assertIsNot(file_storage.FileStorage.__doc__, None,
+        self.assertIsNot(FileStorage.__doc__, None,
                          "FileStorage class needs a docstring")
-        self.assertTrue(len(file_storage.FileStorage.__doc__) >= 1,
+        self.assertTrue(len(FileStorage.__doc__) >= 1,
                         "FileStorage class needs a docstring")
 
     def test_fs_func_docstrings(self):

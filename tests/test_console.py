@@ -50,42 +50,68 @@ class TestHBNBCommandClass(TestCase):
 
     def test_do_create(self):
         """ Tests create method """
+        # gets initial state count and place count
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count State")
             state_count = int(f.getvalue())
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count Place")
             place_count = int(f.getvalue())
+
         # checks error message if no class argument given
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create")
             self.assertEqual(f.getvalue(), "** class name missing **\n")
+
         # checks error message if no class argument is invalid
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create BadClassName")
             self.assertEqual(f.getvalue(), "** class doesn't exist **\n")
+
         # tests obj created successfully when first object
         HBNBCommand().onecmd("create State name=\"California\"")
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count State")
             self.assertEqual(f.getvalue(), "{}\n".format(state_count + 1))
+
         # tests obj created successfully when not first
         HBNBCommand().onecmd("create State name=\"Nevada\"")
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count State")
             self.assertEqual(f.getvalue(), "{}\n".format(state_count + 2))
-        # tests obj created with different class, saves id
+
+        # creates State, City, and User
+        # saves their ids to generate relationships for Place
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create State name=\"Oklahoma\"")
+            state_id = f.getvalue()
+
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create City name=\"Tulsa\" state_id={}".
+                                 format(state_id))
+            city_id = f.getvalue()
+
+        with patch('sys.stdout', new=StringIO()) as f:
+            HBNBCommand().onecmd("create User name={} email={} password={}".
+                                 format('Sean', 'email@gmail.com', 'password'))
+            user_id = f.getvalue()
+
+        # tests obj created with different class (Place), saves id
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(
-                "create Place name=\"My_little_house\" number_rooms=4")
+                "create Place name={} number_rooms=4 city_id={} user_id={}".
+                format("\"My_little_house\"", city_id, user_id))
             p_id = f.getvalue()
             p_id = p_id[:-1]
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count Place")
             self.assertEqual(f.getvalue(), "{}\n".format(place_count + 1))
+
         # checks that after do_create, obj exists in dictionary
         dict_key = "Place." + p_id
-        __objects = storage.all()
-        self.assertTrue(dict_key in __objects.keys())
+        print(p_id)
+        all_keys = storage.all().keys()
+        self.assertIn(dict_key, all_keys)
+
         # tests that underscores in value were changed to spaces
         self.assertEqual(__objects[dict_key].name, "My little house")

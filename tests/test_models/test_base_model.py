@@ -2,15 +2,12 @@
 """Test BaseModel for expected behavior and documentation"""
 from datetime import datetime
 import inspect
-from models.base_model import BaseModel
+from models.base_model import BaseModel, __doc__ as module_doc
 import pep8 as pycodestyle
 import time
 import json
 import os
-from unittest import TestCase
-from unittest import mock
-import models
-module_doc = models.base_model.__doc__
+from unittest import TestCase, mock
 
 
 class TestBaseModelDocs(TestCase):
