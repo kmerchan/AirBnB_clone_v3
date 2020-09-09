@@ -3,7 +3,7 @@
 
 import cmd
 from datetime import datetime
-import models
+from models import storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -55,19 +55,50 @@ class HBNBCommand(cmd.Cmd):
         return new_dict
 
     def do_create(self, arg):
-        """Creates a new instance of a class"""
+        """ Create an object of any class"""
+        # split arguments by space to get class name
         args = arg.split()
-        if len(args) == 0:
+        # check if class name is missing or not in list of available classes
+        if args == []:
             print("** class name missing **")
-            return False
-        if args[0] in classes:
-            new_dict = self._key_value_parser(args[1:])
-            instance = classes[args[0]](**new_dict)
-        else:
+            return
+        if args[0] not in classes:
             print("** class doesn't exist **")
-            return False
-        print(instance.id)
-        instance.save()
+            return
+        else:
+            cls = args[0]
+        # if class does exist, create new instance
+        new_instance = classes[cls]()
+        # if more arguments, resets args without class name
+        if len(args) >= 1:
+            args = args[1:]
+        else:
+            # save before returning, in case using FileStorage
+            new_instance.save()
+            print(new_instance.id)
+            return
+        # loops through each argument, splitting into key/value pairs
+        for argument in args:
+            sa = argument.split("=")
+            # print("Here is sa: {}".format(sa))
+            key = sa[0]
+            value = sa[1]
+            # if there are underscores in value, changed to spaces
+            for i in range(len(value)):
+                if value[i] == "_":
+                    value = value[:i] + " " + value[i+1:]
+            # if there are quotes around key or value, trimmed to remove
+            if (key[0] == "'" and key[-1] == "'") or (
+                    key[0] == "\"" and key[-1] == "\""):
+                key = key[1:-1]
+            if (value[0] == "'" and value[-1] == "'") or (
+                    value[0] == "\"" and value[-1] == "\""):
+                value = value[1:-1]
+            # atrribute is set to that key in the dictionary of objects
+            setattr(new_instance, key, value)
+        # new object is saved after setting non-nullable attributes
+        new_instance.save()
+        print(new_instance.id)
 
     def do_show(self, arg):
         """Prints an instance as a string based on the class and id"""
@@ -78,8 +109,8 @@ class HBNBCommand(cmd.Cmd):
         if args[0] in classes:
             if len(args) > 1:
                 key = args[0] + "." + args[1]
-                if key in models.storage.all():
-                    print(models.storage.all()[key])
+                if key in storage.all():
+                    print(storage.all()[key])
                 else:
                     print("** no instance found **")
             else:
@@ -95,9 +126,9 @@ class HBNBCommand(cmd.Cmd):
         elif args[0] in classes:
             if len(args) > 1:
                 key = args[0] + "." + args[1]
-                if key in models.storage.all():
-                    models.storage.all().pop(key)
-                    models.storage.save()
+                if key in storage.all():
+                    storage.all().pop(key)
+                    storage.save()
                 else:
                     print("** no instance found **")
             else:
@@ -110,9 +141,9 @@ class HBNBCommand(cmd.Cmd):
         args = shlex.split(arg)
         obj_list = []
         if len(args) == 0:
-            obj_dict = models.storage.all()
+            obj_dict = storage.all()
         elif args[0] in classes:
-            obj_dict = models.storage.all(classes[args[0]])
+            obj_dict = storage.all(classes[args[0]])
         else:
             print("** class doesn't exist **")
             return False
@@ -133,7 +164,7 @@ class HBNBCommand(cmd.Cmd):
         elif args[0] in classes:
             if len(args) > 1:
                 k = args[0] + "." + args[1]
-                if k in models.storage.all():
+                if k in storage.all():
                     if len(args) > 2:
                         if len(args) > 3:
                             if args[0] == "Place":
@@ -147,8 +178,8 @@ class HBNBCommand(cmd.Cmd):
                                         args[3] = float(args[3])
                                     except:
                                         args[3] = 0.0
-                            setattr(models.storage.all()[k], args[2], args[3])
-                            models.storage.all()[k].save()
+                            setattr(storage.all()[k], args[2], args[3])
+                            storage.all()[k].save()
                         else:
                             print("** value missing **")
                     else:
@@ -159,6 +190,14 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
         else:
             print("** class doesn't exist **")
+
+    def do_count(self, args=None):
+        """Count current number of class instances"""
+        print(storage.count(args))
+
+    def help_count(self):
+        """ Provides more direction for how to use count method """
+        print("Usage: count <class_name>")
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()

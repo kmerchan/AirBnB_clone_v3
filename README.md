@@ -1,5 +1,8 @@
-# AirBnB Clone - The Console
-The console is the first segment of the AirBnB project at Holberton School that will collectively cover fundamental concepts of higher level programming. The goal of AirBnB project is to eventually deploy our server a simple copy of the AirBnB Website(HBnB). A command interpreter is created in this segment to manage objects for the AirBnB(HBnB) website.
+# AirBnB Clone
+The AirBnB Clone project at Holberton School covers fundamental concepts of higher level programming as students create a minimally viable product (MVP) for the AirBnB website.
+
+## The Console
+The console is the first segment of the AirBnB project. The goal of AirBnB project is to eventually deploy our server a simple copy of the AirBnB Website(HBnB). A command interpreter is created in this segment to manage objects for the AirBnB(HBnB) website.
 
 #### Functionalities of this command interpreter:
 * Create a new object (ex: a new User or a new Place)
@@ -8,12 +11,17 @@ The console is the first segment of the AirBnB project at Holberton School that 
 * Update attributes of an object
 * Destroy an object
 
+## The Storage Engines
+The AirBnB clone utilizes two storage engines to organize information about the States, Cities, Users, Places, Amenities, and Reviews for the dynamic copy of the AirBnB site. This information can be stored and sent as a JSON string through FileStorage engine or stored and accessed from a MySQL database through DBStorage engine.
+
+## The Website
+The AirBnB clone uses Flask web application to dynamically update HTML files for the website content and CSS files help provide user-friendly styling for the site. Information can be gathered from the storage engines to provide users with up-to-date information about current places and users. 
+
 ## Table of Content
 * [Environment](#environment)
-* [Installation](#installation)
-* [File Descriptions](#file-descriptions)
-* [Usage](#usage)
-* [Examples of use](#examples-of-use)
+* [Installation and Usage](#installation)
+* [Console Commands](#console)
+* [Objects and Storage](#objects)
 * [Bugs](#bugs)
 * [Authors](#authors)
 * [License](#license)
@@ -21,24 +29,95 @@ The console is the first segment of the AirBnB project at Holberton School that 
 ## Environment
 This project is interpreted/tested on Ubuntu 14.04 LTS using python3 (version 3.4.3)
 
-## Installation
-* Clone this repository: `git clone "https://github.com/alexaorrico/AirBnB_clone.git"`
+## Installation and Usage
+* Clone this repository: `git clone "https://github.com/kmerchan/AirBnB_clone_v3.git"`
 * Access AirBnb directory: `cd AirBnB_clone`
-* Run hbnb(interactively): `./console` and enter command
-* Run hbnb(non-interactively): `echo "<command>" | ./console.py`
+* To Run hbnb Console (interactively): `./console` and enter command
+* To Run hbnb Console (non-interactively): `echo "<command>" | ./console.py`
 
-## File Descriptions
-[console.py](console.py) - the console contains the entry point of the command interpreter. 
-List of commands this console current supports:
-* `EOF` - exits console 
-* `quit` - exits console
-* `<emptyline>` - overwrites default emptyline method and does nothing
-* `create` - Creates a new instance of`BaseModel`, saves it (to the JSON file) and prints the id
-* `destroy` - Deletes an instance based on the class name and id (save the change into the JSON file). 
-* `show` - Prints the string representation of an instance based on the class name and id.
-* `all` - Prints all string representation of all instances based or not on the class name. 
-* `update` - Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). 
+### Examples of use
+```
+vagrantAirBnB_clone$./console.py
+(hbnb) help
 
+Documented commands (type help <topic>):
+========================================
+EOF  all  create  destroy  help  quit  show  update
+
+(hbnb) all MyModel
+** class doesn't exist **
+(hbnb) create BaseModel
+7da56403-cc45-4f1c-ad32-bfafeb2bb050
+(hbnb) all BaseModel
+[[BaseModel] (7da56403-cc45-4f1c-ad32-bfafeb2bb050) {'updated_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772167), 'id': '7da56403-cc45-4f1c-ad32-bfafeb2bb050', 'created_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772123)}]
+(hbnb) show BaseModel 7da56403-cc45-4f1c-ad32-bfafeb2bb050
+[BaseModel] (7da56403-cc45-4f1c-ad32-bfafeb2bb050) {'updated_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772167), 'id': '7da56403-cc45-4f1c-ad32-bfafeb2bb050', 'created_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772123)}
+(hbnb) destroy BaseModel 7da56403-cc45-4f1c-ad32-bfafeb2bb050
+(hbnb) show BaseModel 7da56403-cc45-4f1c-ad32-bfafeb2bb050
+** no instance found **
+(hbnb) quit
+```
+
+## Console Commands
+Typing `help <command>` or `?<command>` will print information on how to \
+utilize each command.
+
+Below is a brief description of each command:
+|                    command                    |                        
+                        description                                      
+          |
+|:---------------------------------------------:|:-----------------------
+-------------------------------------------------------------------------
+---------:|
+|                `all` or `all <class>`             | Prints all existing
+ objects.  If class_name is specified, prints all existing objects of tha
+t class |
+|              `create <class>`              |                           
+         Creates a new instance of class_name                            
+       |
+|         `show <class> <id>`         |                            Prints
+ the string representation of the instance by class_name with ID object_i
+d                            |
+| `update <class> <id> <attr_name> <attr_val>` |          Update the attr
+ibute attr_name with value attr_val for instance of class_name with ID id
+         |
+|            `destroy <cls_name> <id>`            |                      
+             Delete instance of cls_name with ID id                      
+            |
+|                      `quit`                     |                      
+                        Exit the console                                 
+            |
+|                      `EOF`                      |                      
+                        Exit the console                                 
+            |
+
+Some commands can also be run by calling on the class directly:
+|                    command                    |                        
+                        description                                      
+          |
+|:---------------------------------------------:|:-----------------------
+-------------------------------------------------------------------------
+---------:|
+|                `<class>.all()`             | Prints all existing object
+s of that class name |
+|              `<class>.count()`              |                          
+          Counts all existing objects of that class                      
+             |
+|         `<class>.show("<id>")`         |       Prints the string repres
+entation of the instance by class_name with ID object_id                 
+           |
+| `<class>.update("<id>", "<attr_name>", "<attr_val>")` |          Update
+ the attribute attr_name with value attr_val for instance of class_name w
+ith ID id         |
+|            `<class>.update("<id>", {'<attr_name1>': '<attr_val1>', '<at
+tr_name2>': '<attr_val2>'})`            |                                
+   Updates multiple attributes with key/value pairs for instance of class
+_name with ID id using dictionary representation         |
+|            `<cls_name>.destroy("<id>")`            |                   
+                Delete instance of cls_name with ID id                   
+               |
+
+## Objects and Storage
 #### `models/` directory contains classes used for this project:
 [base_model.py](/models/base_model.py) - The BaseModel class from which future classes will be derived
 * `def __init__(self, *args, **kwargs)` - Initialization of the base model
@@ -54,7 +133,7 @@ Classes inherited from Base Model:
 * [state.py](/models/state.py)
 * [user.py](/models/user.py)
 
-#### `/models/engine` directory contains File Storage class that handles JASON serialization and deserialization :
+#### `/models/engine` directory contains File Storage class that handles JSON serialization and deserialization :
 [file_storage.py](/models/engine/file_storage.py) - serializes instances to a JSON file & deserializes back to instances
 * `def all(self)` - returns the dictionary __objects
 * `def new(self, obj)` - sets in __objects the obj with key <obj class name>.id
@@ -126,37 +205,20 @@ TestBaseModel class:
 * `def test_user_module_docstring(self)` - Test for the user.py module docstring
 * `def test_user_class_docstring(self)` - Test for the User class docstring
 
-
-## Examples of use
-```
-vagrantAirBnB_clone$./console.py
-(hbnb) help
-
-Documented commands (type help <topic>):
-========================================
-EOF  all  create  destroy  help  quit  show  update
-
-(hbnb) all MyModel
-** class doesn't exist **
-(hbnb) create BaseModel
-7da56403-cc45-4f1c-ad32-bfafeb2bb050
-(hbnb) all BaseModel
-[[BaseModel] (7da56403-cc45-4f1c-ad32-bfafeb2bb050) {'updated_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772167), 'id': '7da56403-cc45-4f1c-ad32-bfafeb2bb050', 'created_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772123)}]
-(hbnb) show BaseModel 7da56403-cc45-4f1c-ad32-bfafeb2bb050
-[BaseModel] (7da56403-cc45-4f1c-ad32-bfafeb2bb050) {'updated_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772167), 'id': '7da56403-cc45-4f1c-ad32-bfafeb2bb050', 'created_at': datetime.datetime(2017, 9, 28, 9, 50, 46, 772123)}
-(hbnb) destroy BaseModel 7da56403-cc45-4f1c-ad32-bfafeb2bb050
-(hbnb) show BaseModel 7da56403-cc45-4f1c-ad32-bfafeb2bb050
-** no instance found **
-(hbnb) quit
-```
-
 ## Bugs
 No known bugs at this time. 
 
 ## Authors
+AirBnB Console:
 Alexa Orrico - [Github](https://github.com/alexaorrico) / [Twitter](https://twitter.com/alexa_orrico)  
 Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://twitter.com/earthtojhuang)
 
-Second part of Airbnb: Joann Vuong
+AirBnB MySQL:
+Joann Vuong
+
+AirBnB RESTful API:
+Kelsie Merchant - [kelsie.merchant@holbertonschool.com](kelsie.merchant@holbertonschool.com) / [Github](https://github.com/kmerchan)
+Sean Taylor - [sean.taylor@holbertonschool.com](sean.taylor@holbertonschool.com) / [Github](https://github.com/madmansilver)
+
 ## License
 Public Domain. No copy write protection. 
