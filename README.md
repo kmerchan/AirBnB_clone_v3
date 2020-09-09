@@ -63,59 +63,26 @@ Typing `help <command>` or `?<command>` will print information on how to \
 utilize each command.
 
 Below is a brief description of each command:
-|                    command                    |                        
-                        description                                      
-          |
-|:---------------------------------------------:|:-----------------------
--------------------------------------------------------------------------
----------:|
-|                `all` or `all <class>`             | Prints all existing
- objects.  If class_name is specified, prints all existing objects of tha
-t class |
-|              `create <class>`              |                           
-         Creates a new instance of class_name                            
-       |
-|         `show <class> <id>`         |                            Prints
- the string representation of the instance by class_name with ID object_i
-d                            |
-| `update <class> <id> <attr_name> <attr_val>` |          Update the attr
-ibute attr_name with value attr_val for instance of class_name with ID id
-         |
-|            `destroy <cls_name> <id>`            |                      
-             Delete instance of cls_name with ID id                      
-            |
-|                      `quit`                     |                      
-                        Exit the console                                 
-            |
-|                      `EOF`                      |                      
-                        Exit the console                                 
-            |
+|                    command                    |                                                description                                                |
+|:---------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|
+|                `all` or `all <class>`             | Prints all existing objects.  If class_name is specified, prints all existing objects of that class |
+|              `create <class>`              |                                    Creates a new instance of class_name                                   |
+|         `show <class> <id>`         |                            Prints the string representation of the instance by class_name with ID object_id                            |
+| `update <class> <id> <attr_name> <attr_val>` |          Update the attribute attr_name with value attr_val for instance of class_name with ID id         |
+|            `destroy <cls_name> <id>`            |                                   Delete instance of cls_name with ID id                                  |
+|                      `quit`                     |                                              Exit the console                                             |
+|                      `EOF`                      |                                              Exit the console                                             |
 
 Some commands can also be run by calling on the class directly:
-|                    command                    |                        
-                        description                                      
-          |
-|:---------------------------------------------:|:-----------------------
--------------------------------------------------------------------------
----------:|
-|                `<class>.all()`             | Prints all existing object
-s of that class name |
-|              `<class>.count()`              |                          
-          Counts all existing objects of that class                      
-             |
-|         `<class>.show("<id>")`         |       Prints the string repres
-entation of the instance by class_name with ID object_id                 
-           |
-| `<class>.update("<id>", "<attr_name>", "<attr_val>")` |          Update
- the attribute attr_name with value attr_val for instance of class_name w
-ith ID id         |
-|            `<class>.update("<id>", {'<attr_name1>': '<attr_val1>', '<at
-tr_name2>': '<attr_val2>'})`            |                                
-   Updates multiple attributes with key/value pairs for instance of class
-_name with ID id using dictionary representation         |
-|            `<cls_name>.destroy("<id>")`            |                   
-                Delete instance of cls_name with ID id                   
-               |
+|                    command                    |                                                description                                                |
+|:---------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|
+|                `<class>.all()`             | Prints all existing objects of that class name |
+|              `<class>.count()`              |                                    Counts all existing objects of that class                                   |
+|         `<class>.show("<id>")`         |       Prints the string representation of the instance by class_name with ID object_id                            |
+| `<class>.update("<id>", "<attr_name>", "<attr_val>")` |          Update the attribute attr_name with value attr_val for instance of class_name with ID id         |
+|            `<class>.update("<id>", {'<attr_name1>': '<attr_val1>', '<attr_name2>': '<attr_val2>'})`            |                                   Updates multiple attributes with key/value pairs for instance of class_name with ID id using dictionary representation         |
+|            `<cls_name>.destroy("<id>")`            |                                   Delete instance of cls_name with ID id                                  |
+
 
 ## Objects and Storage
 #### `models/` directory contains classes used for this project:
