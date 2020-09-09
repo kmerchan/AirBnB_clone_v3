@@ -182,3 +182,29 @@ class test_dbStorage(TestCase):
     def test_storage_var_created(self):
         """ DBStorage object storage created """
         self.assertEqual(type(storage), DBStorage)
+
+    def test_storage_count_method(self):
+        """tests FileStorage count method"""
+        # gets initial counts of all objects and all State objects in storage
+        count = storage.count()
+        count_state = storage.count(State)
+        # creates new instance of State and saves to database
+        new = State()
+        new.name = "Idaho"
+        new.save()
+        # tests if count increased for both all and State objects
+        self.assertEqual(storage.count(), count + 1)
+        self.assertEqual(storage.count(State), count_state + 1)
+
+    def test_storage_get_method(self):
+        """tests FileStorage get method to retrieve one object"""
+        # tests get method when id is not found
+        self.assertIs(storage.get(State, -89), None)
+        # creates new instance of State and saves to database
+        new = State()
+        new.name = "Oklahoma"
+        new.save()
+        # tests get method with valid class name and id
+        got_obj = storage.get(State, new.id)
+        self.assertIs(type(got_obj), State)
+        self.assertEqual(got_obj.id, new.id)
