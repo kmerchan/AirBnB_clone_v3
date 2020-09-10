@@ -104,7 +104,7 @@ def update_place(place_id):
 
     for key, value in json.items():
         if key != 'updated_at' and key != 'created_at' and key != 'id' \
-and key != 'user_id' and key != 'city_id':
+           and key != 'user_id' and key != 'city_id':
             setattr(place, key, value)
 
     place.save()
