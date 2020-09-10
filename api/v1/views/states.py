@@ -9,6 +9,7 @@ from flask.json import jsonify
 from models import storage
 from models.state import State
 
+
 @app_views.route('/states', strict_slashes=False)
 @app_views.route('/states/<state_id>', strict_slashes=False)
 def get_states(state_id=None):
@@ -29,7 +30,9 @@ def get_states(state_id=None):
 
     abort(404)
 
-@app_views.route('/states/<state_id>', strict_slashes=False, methods=['DELETE'])
+
+@app_views.route('/states/<state_id>', strict_slashes=False,
+                 methods=['DELETE'])
 def del_state(state_id):
     """
     deletes a state object
@@ -41,6 +44,7 @@ def del_state(state_id):
             return jsonify({}), 200
 
     abort(404)
+
 
 @app_views.route('/states', strict_slashes=False, methods=['POST'])
 def make_state():
@@ -59,6 +63,7 @@ def make_state():
     new.save()
 
     return jsonify(new.to_dict()), 201
+
 
 @app_views.route('/states/<state_id>', strict_slashes=False, methods=['PUT'])
 def update_state(state_id):
