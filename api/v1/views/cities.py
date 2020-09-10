@@ -96,7 +96,8 @@ def update_city(city_id):
         abort(400, 'Not a JSON')
 
     for key, value in json.items():
-        if key != 'updated_at' and key != 'created_at' and key != 'id':
+        if key != 'updated_at' and key != 'created_at' \
+           and key != 'id' and key != 'state_id':
             setattr(city, key, value)
 
     city.save()
