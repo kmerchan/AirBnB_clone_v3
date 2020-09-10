@@ -4,12 +4,14 @@ creates instance of Flask and registers blueprint to instance
 """
 
 from flask import Flask
+from flask_cors import CORS
 from flask.json import jsonify
 from models import storage
 from api.v1.views import app_views
 from os import getenv
 app = Flask(__name__)
 app.register_blueprint(app_views)
+CORS(app, origins="0.0.0.0")
 host_var = getenv('HBNB_API_HOST')
 port_var = getenv('HBNB_API_PORT')
 
