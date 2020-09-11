@@ -7,9 +7,9 @@ from api.v1.views import app_views
 from flask import abort, request
 from flask.json import jsonify
 from models import storage
-from models.places import Place
-from models.users import User
-from models.reviews import Review
+from models.place import Place
+from models.user import User
+from models.review import Review
 
 
 @app_views.route('/places/<place_id>/reviews', strict_slashes=False)
@@ -32,7 +32,7 @@ def get_review(review_id=None):
     """
     retrieves one review by review_id
     """
-    review = storage.review(Review, review_id)
+    review = storage.get(Review, review_id)
     if review is not None:
         return jsonify(review.to_dict())
 
@@ -45,7 +45,7 @@ def del_review(review_id=None):
     """
     deletes a review object
     """
-    review = storage.review(Review, review_id)
+    review = storage.get(Review, review_id)
     if review is not None:
         review.delete()
         storage.save()
@@ -80,6 +80,7 @@ def make_review(place_id=None):
         abort(400, 'Missing text')
 
     review = Review(**json)
+    review.place_id = place_id
     review.save()
 
     return jsonify(review.to_dict()), 201
