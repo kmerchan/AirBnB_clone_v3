@@ -193,7 +193,10 @@ class HBNBCommand(cmd.Cmd):
 
     def do_count(self, args=None):
         """Count current number of class instances"""
-        print(storage.count(args))
+        if args in classes:
+            print(storage.count(classes[args]))
+        else:
+            print(storage.count(None))
 
     def help_count(self):
         """ Provides more direction for how to use count method """

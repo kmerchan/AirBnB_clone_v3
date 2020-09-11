@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-state related api endpoints
+reviews related api endpoints
 """
 
 from api.v1.views import app_views

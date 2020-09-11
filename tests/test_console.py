@@ -73,28 +73,33 @@ class TestHBNBCommandClass(TestCase):
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count State")
             self.assertEqual(f.getvalue(), "{}\n".format(state_count + 1))
+        storage.reload()
 
         # tests obj created successfully when not first
         HBNBCommand().onecmd("create State name=\"Nevada\"")
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count State")
             self.assertEqual(f.getvalue(), "{}\n".format(state_count + 2))
+        storage.reload()
 
         # creates State, City, and User
         # saves their ids to generate relationships for Place
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create State name=\"Oklahoma\"")
             state_id = f.getvalue()
+        storage.reload()
 
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create City name=\"Tulsa\" state_id={}".
                                  format(state_id))
             city_id = f.getvalue()
+        storage.reload()
 
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("create User name={} email={} password={}".
                                  format('Sean', 'email@gmail.com', 'password'))
             user_id = f.getvalue()
+        storage.reload()
 
         # tests obj created with different class (Place), saves id
         with patch('sys.stdout', new=StringIO()) as f:
@@ -103,6 +108,7 @@ class TestHBNBCommandClass(TestCase):
                 format("\"My_little_house\"", city_id, user_id))
             p_id = f.getvalue()
             p_id = p_id[:-1]
+        storage.reload()
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("count Place")
             self.assertEqual(f.getvalue(), "{}\n".format(place_count + 1))
@@ -110,8 +116,8 @@ class TestHBNBCommandClass(TestCase):
         # checks that after do_create, obj exists in dictionary
         dict_key = "Place." + p_id
         print(p_id)
-        all_keys = storage.all().keys()
-        self.assertIn(dict_key, all_keys)
+        all_obj = storage.all()
+        self.assertIn(dict_key, all_obj.keys())
 
         # tests that underscores in value were changed to spaces
-        self.assertEqual(__objects[dict_key].name, "My little house")
+        self.assertEqual(all_obj.get(dict_key).name, "My little house")
