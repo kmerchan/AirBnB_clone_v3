@@ -74,6 +74,18 @@ class TestFileStorage(TestCase):
         """Test that all returns a dictionaty"""
         self.assertIs(type(storage.all()), dict)
 
+    @skipIf(storage_t != 'db', "not testing db storage")
+    def test_all_no_class(self):
+        """Test that all returns all rows when no class is passed"""
+
+    @skipIf(storage_t != 'db', "not testing db storage")
+    def test_new(self):
+        """test that new adds an object to the database"""
+
+    @skipIf(storage_t != 'db', "not testing db storage")
+    def test_save(self):
+        """Test that save properly saves objects to file.json"""
+
 
 class test_dbStorage(TestCase):
     """ Class to test the database storage method """
@@ -162,11 +174,6 @@ class test_dbStorage(TestCase):
         self.assertIn("State.{}".format(new.id), storage.all(State).keys())
         self.assertEqual(storage.all().get("State.{}".
                                            format(new.id)).name, "testing")
-
-    @skipIf(storage_t != 'db', "not testing db storage")
-    def test_type_objects(self):
-        """ Confirm __objects is a dict """
-        self.assertEqual(type(storage.all()), dict)
 
     @skipIf(storage_t != 'db', "not testing db storage")
     def test_key_format(self):
