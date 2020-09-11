@@ -15,12 +15,14 @@ CORS(app, origins="0.0.0.0")
 host_var = getenv('HBNB_API_HOST')
 port_var = getenv('HBNB_API_PORT')
 
+
 @app.teardown_appcontext
 def teardown(self):
     """
     closes current session through storage.close()
     """
     storage.close()
+
 
 @app.errorhandler(404)
 def not_found(e):
@@ -30,4 +32,4 @@ def not_found(e):
     return jsonify(error='Not found'), 404
 
 if __name__ == "__main__":
-    app.run(host=host_var ,port=port_var, threaded=True)
+    app.run(host=host_var, port=port_var, threaded=True)
